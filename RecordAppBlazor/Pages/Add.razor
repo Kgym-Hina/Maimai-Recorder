@@ -1,0 +1,59 @@
+﻿@page "/add"
+@using RecordAppBlazor.Function
+
+
+<PageTitle>添加录制</PageTitle>
+
+<h1>添加新的录制</h1>
+
+<p role="status">当前录制状态: @currentRecordingStateString</p>
+
+<h2>注意事项</h2>
+
+
+<li>添加录制后, 机台的画面连同摄像头将会被录制下来.</li>
+<li>录制的视频将会被保存在机台的硬盘中, 请勿在录制时进行其他操作, 以免录制失败.</li>
+<li>每天的每次录制请务必保证设置的密码不同, 以免录制失败</li>
+<li>录制为每天上午十点(即机台通电时)清空</li>
+<li>每天晚上十点(即机台断电时), 录制服务将会无法访问. 请勿在闭店那一把录制视频</li>
+
+<br/>
+
+
+<input type="text" name="code" class="input-group-text" placeholder="输入用于查询的密码" @bind="codeInput"/><br>
+
+<button class="btn btn-primary" @onclick="StartRecord">开始录制</button>
+
+<p style="color: red">@errorMessage</p>
+
+@code {
+    private bool currentRecordingState;
+    private string currentRecordingStateString => currentRecordingState ? "录制中" : "未录制";
+    private string errorMessage;
+    
+    private string? codeInput;
+    
+    protected override void OnInitialized()
+    {
+        currentRecordingState = File.Exists($"{Environment.GetEnvironmentVariable("HOME")}/record.lock");
+    }
+
+    private void StartRecord()
+    {
+        if (currentRecordingState == true)
+        {
+            errorMessage = "当前已经在录制中, 请勿重复录制";
+            return;
+        }
+        
+        var recording = RecordManager.StartRecording(codeInput);
+        if (recording == "200")
+        {
+            currentRecordingState = true;
+        }
+        else
+        {
+            errorMessage = recording;
+        }
+    }
+}

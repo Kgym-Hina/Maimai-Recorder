@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AListSdkSharp" Version="1.0.1" />
+      <PackageReference Include="obs-websocket-dotnet" Version="5.0.0.3" />
+    </ItemGroup>
+
+</Project>
