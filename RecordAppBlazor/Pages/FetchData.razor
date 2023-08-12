@@ -3,7 +3,7 @@
 @using System.Net
 @using System.Net.Http.Headers
 
-@inject IJSRuntime JS
+@inject NavigationManager navi
 
 <PageTitle>查询录制</PageTitle>
 
@@ -45,37 +45,17 @@ else
 @code {
     private Recording[]? Recordings;
     private string codeInput = "";
-    private Lazy<IJSObjectReference> downloadModuleInstance = new();
-    private Lazy<IJSObjectReference> downloadModule = new();
 
     protected override async Task OnInitializedAsync()
     {
-        
         Recordings = RecordingService.GetAllRecordings();
     }
     
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            downloadModule = new(await JS.InvokeAsync<IJSObjectReference>("import", "./js/downloadFile.js"));
-        }
-    }
-    
-    private async Task DownloadRecording(string code)
+    private void DownloadRecording(string code)
     {
         var recording = RecordingService.GetRecording(code);
-
-        var fileBytes = await File.ReadAllBytesAsync(recording.Path);
-
-        try
-        {
-            downloadModuleInstance = new(await downloadModule.Value.InvokeAsync<IJSObjectReference>("downloadFile", $"{code}.mp4", fileBytes));
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+        
+        navi.NavigateTo($"{PropertiesManager.Properties.FileServerRoot}{recording.Code}.mkv");
     }
 
 

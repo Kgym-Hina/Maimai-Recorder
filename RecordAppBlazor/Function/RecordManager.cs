@@ -44,14 +44,14 @@ public static class RecordManager
         
         // 在指定时间后停止录制
         var timeNow = DateTime.Now;
-        if (timeNow.Hour >= Properties.StopTime.Hour && timeNow.Minute >= Properties.StopTime.Minute)
+        if (timeNow.Hour >= PropertiesManager.Properties.StopTime.Hour && timeNow.Minute >= PropertiesManager.Properties.StopTime.Minute)
         {
             return "今日的招募已经结束~";
         }
 
         // 写入进程锁
         File.WriteAllText($"{Environment.GetEnvironmentVariable("HOME")}/record.lock",
-            $"{code}::{DateTime.Now.Add(Properties.RecordTimeSpan)}");
+            $"{code}::{DateTime.Now.Add(PropertiesManager.Properties.RecordTimeSpan)}");
         
         // 清空目录
         var path = Obs.client.GetRecordDirectory();
@@ -89,7 +89,7 @@ public static class RecordManager
 
         if (files.Length == 1)
         {
-            File.Copy(files[0], $"{p}/{code}.mp4");
+            File.Copy(files[0], $"{p}/{code}.mkv");
         }
         else
         {
@@ -100,10 +100,15 @@ public static class RecordManager
         RecordingService.AddRecording(new Recording()
         {
             Code = code,
-            Path =  $"{p}/{code}.mp4"
+            Path =  $"{p}/{code}.mkv"
         });
 
         return "200";
+    }
+
+    public static void SaveBuffer()
+    {
+        Obs.client.SaveReplayBuffer();
     }
 
   
