@@ -2,6 +2,8 @@
 用于内录机台自助录播的系统.
 目前处于能用的状态，后期将会进行优化.
 
+本项目使用 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/legalcode) 协议开源
+
 # Usage
 ```
 dotnet run
