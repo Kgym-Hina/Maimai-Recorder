@@ -13,6 +13,19 @@ public static class RecordManager
         {
             Directory.CreateDirectory(p);
         }
+        
+        // 删除上次的进程锁
+        if (File.Exists($"{Environment.GetEnvironmentVariable("HOME")}/record.lock"))
+        {
+            File.Delete($"{Environment.GetEnvironmentVariable("HOME")}/record.lock");
+        }
+        
+        // 删除上次的文件
+        var files = Directory.GetFiles(p);
+        if (files.Length > 0)
+        {
+            files.ToList().ForEach(File.Delete);
+        }
     }
     
     public static string StartRecording(string? code)
@@ -22,6 +35,18 @@ public static class RecordManager
         if (string.IsNullOrWhiteSpace(code))
         {
             return "不能为空";
+        }
+
+        if (RecordingService.GetAllRecordings().Any(r => r.Code == code))
+        {
+            return "此code已经被使用";
+        }
+        
+        // 在指定时间后停止录制
+        var timeNow = DateTime.Now;
+        if (timeNow.Hour >= Properties.StopTime.Hour && timeNow.Minute >= Properties.StopTime.Minute)
+        {
+            return "今日的招募已经结束~";
         }
 
         // 写入进程锁
