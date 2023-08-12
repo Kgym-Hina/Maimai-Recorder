@@ -1,6 +1,9 @@
 ﻿@page "/fetchdata"
 @using RecordAppBlazor.Data
-@inject WeatherForecastService ForecastService
+@using System.Net
+@using System.Net.Http.Headers
+
+@inject IJSRuntime JS
 
 <PageTitle>查询录制</PageTitle>
 
@@ -8,7 +11,11 @@
 
 <p>输入之前设置的密码, 来查询录制的视频下载链接</p>
 
-@if (forecasts == null)
+<input type="text" name="code" class="input-group-text" placeholder="输入用于查询的密码" @bind="codeInput"/><br>
+<button class="btn btn-primary" @onclick="() => DownloadRecording(codeInput)">查询</button>
+
+
+@if (Recordings == null)
 {
     <p>
         <em>Loading...</em>
@@ -19,20 +26,16 @@ else
     <table class="table">
         <thead>
         <tr>
-            <th>Date</th>
-            <th>Temp. (C)</th>
-            <th>Temp. (F)</th>
-            <th>Summary</th>
+            <th>加密后的Code</th>
+            <th>路径</th>
         </tr>
         </thead>
         <tbody>
-        @foreach (var forecast in forecasts)
+        @foreach (var recording in Recordings)
         {
             <tr>
-                <td>@forecast.Date.ToShortDateString()</td>
-                <td>@forecast.TemperatureC</td>
-                <td>@forecast.TemperatureF</td>
-                <td>@forecast.Summary</td>
+                <td>@recording.Code</td>
+                <td>@recording.Path</td>
             </tr>
         }
         </tbody>
@@ -40,11 +43,40 @@ else
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private Recording[]? Recordings;
+    private string codeInput = "";
+    private Lazy<IJSObjectReference> downloadModuleInstance = new();
+    private Lazy<IJSObjectReference> downloadModule = new();
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
+        
+        Recordings = RecordingService.GetAllRecordings();
     }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            downloadModule = new(await JS.InvokeAsync<IJSObjectReference>("import", "./js/downloadFile.js"));
+        }
+    }
+    
+    private async Task DownloadRecording(string code)
+    {
+        var recording = RecordingService.GetRecording(code);
+
+        var fileBytes = await File.ReadAllBytesAsync(recording.Path);
+
+        try
+        {
+            downloadModuleInstance = new(await downloadModule.Value.InvokeAsync<IJSObjectReference>("downloadFile", $"{code}.mp4", fileBytes));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
 
 }

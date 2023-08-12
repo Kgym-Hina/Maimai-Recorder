@@ -71,6 +71,15 @@ public static class RecordManager
             return "内部错误, 请联系管理员";
         }
 
+        Console.Out.WriteLine("copy file success");
+        RecordingService.AddRecording(new Recording()
+        {
+            Code = code,
+            Path =  $"{p}/{code}.mp4"
+        });
+
         return "200";
     }
+
+  
 }
