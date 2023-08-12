@@ -30,6 +30,8 @@ public static class RecordManager
     
     public static string StartRecording(string? code)
     {
+        BufferManager.StopBuffer();
+        
         code = code.ToMD5();
         Console.Out.WriteLine("start code: " + code);
         if (string.IsNullOrWhiteSpace(code))
@@ -103,13 +105,9 @@ public static class RecordManager
             Path =  $"{p}/{code}.mkv"
         });
 
+        BufferManager.StartBuffer();
+
         return "200";
     }
 
-    public static void SaveBuffer()
-    {
-        Obs.client.SaveReplayBuffer();
-    }
-
-  
 }

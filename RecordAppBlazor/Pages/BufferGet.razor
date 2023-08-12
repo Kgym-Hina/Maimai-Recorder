@@ -1,0 +1,33 @@
+@page "/buffer"
+@using RecordAppBlazor.Function
+
+
+<PageTitle>调取缓存</PageTitle>
+
+<h1>调取缓存</h1>
+
+<p>卧槽推了! 卧槽没录!</p>
+
+<p>此功能<b>极不稳定</b>. 依赖于录制软件的回放缓存功能, 有一定概率存在没成功缓存或调取时间过晚导致已释放等问题.</p>
+
+<p>直播缓存将会保存近200s的视频</p>
+
+<p>当前缓存状态: @currentBufferStatusString</p>
+
+<button class="btn btn-primary" @onclick="GetBuffer">调取</button>
+
+<br>
+<p style="color: red">@errorMessage</p>
+
+
+@code {
+    private bool currentBufferStatus => BufferManager.isBuffering;
+    private string currentBufferStatusString => currentBufferStatus ? "正在运行中" : "已停止";
+    private string errorMessage;
+
+    
+    private void GetBuffer()
+    {
+        errorMessage = BufferManager.SaveBuffer();
+    }
+}

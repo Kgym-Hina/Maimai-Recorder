@@ -8,8 +8,9 @@ public class Timer : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
+            var locked = File.Exists($"{Environment.GetEnvironmentVariable("HOME")}/record.lock");
             // 检测是否有进程锁
-            if (File.Exists($"{Environment.GetEnvironmentVariable("HOME")}/record.lock"))
+            if (locked)
             {
                 // 执行任务: 五秒钟检测一次是否超时
                 var lockFile = await File.ReadAllTextAsync($"{Environment.GetEnvironmentVariable("HOME")}/record.lock", stoppingToken);
@@ -21,6 +22,20 @@ public class Timer : BackgroundService
                     // 停止录制
                     RecordManager.StopRecording(lockFileContent[0]);
                 }
+            }
+            
+            // 检测buffer
+            try
+            {
+                if (!locked && !BufferManager.isInitialized)
+                {
+                    BufferManager.isInitialized = true;
+                    BufferManager.StartBuffer();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
             
             // 暂停一段时间，例如每隔5秒执行一次
