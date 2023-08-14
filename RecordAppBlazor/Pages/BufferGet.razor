@@ -13,6 +13,7 @@
 <button class="button is-primary is-light is-rounded" @onclick="GetBuffer">调取</button>
 
 <ErrorPromt ErrorMessage="@errorMessage"></ErrorPromt>
+<Prompt Content="@promptContent"></Prompt>
 
 
 @code {
@@ -20,10 +21,20 @@
     private string currentBufferStatusString => currentBufferStatus ? "正在运行中" : "已停止";
     private string errorMessage;
     private string statusColor => currentBufferStatus ? "red" : "green";
+    private string promptContent;
 
     
     private void GetBuffer()
     {
-        errorMessage = BufferManager.SaveBuffer();
+        var msg = BufferManager.SaveBuffer();
+
+        if (msg.StartsWith("请使用"))
+        {
+            promptContent = msg;
+        }
+        else
+        {
+            errorMessage = msg;
+        }
     }
 }

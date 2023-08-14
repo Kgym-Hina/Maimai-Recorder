@@ -1,8 +1,11 @@
-﻿<article class="message is-link">
-    <div class="message-body">
-        @Content
-    </div>
-</article>
+﻿@if (!string.IsNullOrWhiteSpace(Content))
+{
+    <article class="message is-link">
+        <div class="message-body">
+            @Content
+        </div>
+    </article>
+}
 
 @code {
     
