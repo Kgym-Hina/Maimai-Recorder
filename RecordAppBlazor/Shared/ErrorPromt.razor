@@ -1,0 +1,18 @@
+@if (!string.IsNullOrWhiteSpace(ErrorMessage))
+{
+    <br><br>
+    <article class="message is-danger">
+        <div class="message-header">
+            <p>Error</p>
+            <p>无法预计的录播程序失败</p>
+            <button class="delete" aria-label="delete"></button>
+        </div>
+        <div class="message-body">
+            @ErrorMessage
+        </div>
+    </article>
+}
+@code {
+    [Parameter]
+    public string ErrorMessage { get; set; }
+}

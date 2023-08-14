@@ -1,18 +1,31 @@
 ﻿@page "/"
+@using RecordAppBlazor.Data
 
 <PageTitle>主页</PageTitle>
 
-<h1>舞萌录制系统Z</h1>
-<h2>Maimai Recording System-Z</h2>
+<h1>@Title</h1>
+<h2>@SubTitle</h2>
 
-<p>请在侧边栏选择需要的功能</p>
+<h2 style="visibility: @aboutMsgVisibility">关于</h2>
 
-<h2>关于</h2>
+<div style="visibility: @aboutMsgVisibility">
+    <p>录制系统: <a href="https://github.com/Kgym-Hina">Kgym-Hina@Github</a> <a href="https://space.bilibili.com/12472249">幸运的转转人偶@Bilibili</a></p>
+</div>
 
-<p>启动脚本/录制系统: <a href="https://github.com/Kgym-Hina">Kgym-Hina@Github</a> <a href="https://space.bilibili.com/12472249">幸运的转转人偶@Bilibili</a></p>
-<p>硬件采购/配置: <a href="https://space.bilibili.com/323737932">Raid10没有1@Bilibili</a> </p>
-<p>感谢城市英雄店的大力支持</p>
+<div>
+    @aboutMsg
+</div>
 
-<Prompt Content="本系统当前正处于测试阶段, 有一定不稳定因素."/>
+@if (showExperimental)
+{
+    <Prompt Content="本系统当前正处于测试阶段, 有一定不稳定因素."/>
+}
 
-@* <Prompt Title="提示" Content="由于各种设备均为制作者个人出资购买, 需要一定的回血资金: 本工具在测试稳定之后将会收费 1~2 元每次. 具体情况到时候再进行讨论"/> *@
+@code
+{
+    private string aboutMsgVisibility = PropertiesManager.Properties.AboutMessageVisibility ? "visible" : "hidden";
+    private MarkupString aboutMsg = PropertiesManager.Properties.CustomAboutMessage;
+    private bool showExperimental = PropertiesManager.Properties.ShowExperimentalMessage;
+    private string Title = PropertiesManager.Properties.SystemTitle;
+    private string SubTitle = PropertiesManager.Properties.SystemSubtitle;
+}

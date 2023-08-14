@@ -14,17 +14,7 @@
 <input type="text" name="code" class="input is-rounded" placeholder="输入用于查询的密码" @bind="codeInput"/><br><br>
 <button class="button is-primary is-light is-rounded" @onclick="() => DownloadRecording(codeInput)">查询</button>
 
-<br><br>
-<article class="message is-danger" style="visibility: @errorMsgVisibility">
-  <div class="message-header">
-    <p>Error</p>
-    <button class="delete" aria-label="delete"></button>
-  </div>
-    <div class="message-body">
-        无法预计的录播程序失败
-        @errorMessage
-    </div>
-</article>
+<ErrorPromt ErrorMessage="@errorMessage"></ErrorPromt>
 
 @code {
     private Recording[]? Recordings;

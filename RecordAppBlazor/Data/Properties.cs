@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 
 namespace RecordAppBlazor.Data;
@@ -13,6 +14,14 @@ public class Properties
     public string OBSWebsocketPassword = "";
     public string TempRecordPath = $"{Environment.GetEnvironmentVariable("HOME")}/Records/";
     public string RecordLockPath = $"{Environment.GetEnvironmentVariable("HOME")}/record.lock";
+    public bool AboutMessageVisibility = true;
+    public MarkupString CustomAboutMessage =
+        new MarkupString("<p>硬件采购/配置: <a href=\"https://space.bilibili.com/323737932\">Raid10没有1@Bilibili</a> </p>\n    <p>感谢城市英雄店的大力支持</p>");
+    public bool ShowExperimentalMessage = false;
+    public string SystemTitle = "街机游戏录制系统";
+    public string SystemSubtitle = "Arcade Game Recording System-Z";
+    public bool PlayersCanStopRecording = true;
+    public bool PlayersCanStartRecording = true;
 }
 
 public static class PropertiesManager

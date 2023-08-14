@@ -1,6 +1,7 @@
 ﻿@page "/add"
 @using RecordAppBlazor.Function
 @using System.IO
+@using RecordAppBlazor.Data
 
 
 <PageTitle>添加录制</PageTitle>
@@ -11,40 +12,34 @@
 
 <h2>注意事项</h2>
 
-
 <li>添加录制后, 机台的画面连同摄像头将会被录制下来.</li>
-<li>录制的视频将会被保存在机台的硬盘中, 请勿在录制时进行其他操作, 以免录制失败.</li>
 <li>每天的每次录制请务必保证设置的密码不同, 以免录制失败</li>
-<li>录制为每天上午十点(即机台通电时)清空</li>
-<li>每天晚上十点(即机台断电时), 录制服务将会无法访问. 请提前下载视频</li>
-<li>每天晚上九点四十五之后将会停止新增新的录制</li>
+<li>录制为每天机台通电时清空</li>
+<li>每天晚上机台断电时, 录制服务将会无法访问. 请提前下载视频</li>
+<li>每天晚上 @stopRecordingTime 之后将会停止新增新的录制</li>
 
 <br/>
 
 
-<input type="text" name="code" class="input is-rounded" placeholder="输入用于查询的密码" @bind="codeInput"/><br><br/>
+<input type="text" name="code" class="input is-rounded" placeholder="设定取件码" @bind="codeInput"/><br><br/>
 
-<button class="button is-primary is-light is-rounded" @onclick="StartRecord">开始录制</button>
-<button class="button is-danger is-light is-rounded" @onclick="StopRecording">停止录制</button>
+@if (PropertiesManager.Properties.PlayersCanStartRecording)
+{
+    <button class="button is-primary is-light is-rounded" @onclick="StartRecord">开始录制</button>
+}
+@if (PropertiesManager.Properties.PlayersCanStopRecording)
+{
+    <button class="button is-danger is-light is-rounded" @onclick="StopRecording">停止录制</button>
+}
 
-<br><br>
-<article class="message is-danger" style="visibility: @errorMsgVisibility">
-  <div class="message-header">
-    <p>Error</p>
-    <button class="delete" aria-label="delete"></button>
-  </div>
-    <div class="message-body">
-        无法预计的录播程序失败
-        @errorMessage
-    </div>
-</article>
+<ErrorPromt ErrorMessage="@errorMessage"></ErrorPromt>
 
 @code {
     private bool currentRecordingState;
     private string currentRecordingStateString => currentRecordingState ? "录制中" : "未录制";
     private string errorMessage;
     private string statusColor => currentRecordingState ? "red" : "green";
-    private string errorMsgVisibility => string.IsNullOrWhiteSpace(errorMessage) ? "hidden" : "visible";
+    private string stopRecordingTime => PropertiesManager.Properties.StopTime.ToLongTimeString();
     
     private string? codeInput;
     
@@ -63,7 +58,7 @@
 
         if (string.IsNullOrWhiteSpace(codeInput))
         {
-            errorMessage = "Code不能为空";
+            errorMessage = "取件码不能为空";
         }
         
         var recording = RecordManager.StartRecording(codeInput);
@@ -87,7 +82,7 @@
 
         if (string.IsNullOrWhiteSpace(codeInput))
         {
-            errorMessage = "Code不能为空";
+            errorMessage = "取件码不能为空";
         }
         
         var recording = RecordManager.StopRecording(codeInput);
