@@ -11,40 +11,26 @@
 
 <p>输入之前设置的密码, 来查询录制的视频下载链接</p>
 
-<input type="text" name="code" class="input-group-text" placeholder="输入用于查询的密码" @bind="codeInput"/><br>
-<button class="btn btn-primary" @onclick="() => DownloadRecording(codeInput)">查询</button>
+<input type="text" name="code" class="input is-rounded" placeholder="输入用于查询的密码" @bind="codeInput"/><br><br>
+<button class="button is-primary is-light is-rounded" @onclick="() => DownloadRecording(codeInput)">查询</button>
 
-
-@if (Recordings == null)
-{
-    <p>
-        <em>Loading...</em>
-    </p>
-}
-else
-{
-    <table class="table">
-        <thead>
-        <tr>
-            <th>加密后的Code</th>
-            <th>路径</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var recording in Recordings)
-        {
-            <tr>
-                <td>@recording.Code</td>
-                <td>@recording.Path</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-}
+<br><br>
+<article class="message is-danger" style="visibility: @errorMsgVisibility">
+  <div class="message-header">
+    <p>Error</p>
+    <button class="delete" aria-label="delete"></button>
+  </div>
+    <div class="message-body">
+        无法预计的录播程序失败
+        @errorMessage
+    </div>
+</article>
 
 @code {
     private Recording[]? Recordings;
     private string codeInput = "";
+    private string errorMsgVisibility => string.IsNullOrWhiteSpace(errorMessage) ? "hidden" : "visible";
+    private string errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
@@ -53,10 +39,16 @@ else
     
     private void DownloadRecording(string code)
     {
-        var recording = RecordingService.GetRecording(code);
-        
-        navi.NavigateTo($"{PropertiesManager.Properties.FileServerRoot}{recording.Code}.mkv");
+        try
+        {
+            var recording = RecordingService.GetRecording(code);
+            navi.NavigateTo($"{PropertiesManager.Properties.FileServerRoot}{recording.Code}.mkv");
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+        }        
     }
 
 
-}
+};

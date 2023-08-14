@@ -6,14 +6,14 @@ public class Properties
 {
     public TimeSpan RecordTimeSpan = TimeSpan.FromMinutes(2.5); // 录制的时长
     public TimeOnly StopTime = new(21, 45, 00); // 停止增加录制的时间
-    public string FileServerRoot = "http://192.168.100.97:9090/";
+    public string FileServerRoot;
 }
 
 public static class PropertiesManager
 {
-    public static readonly Properties? Properties;
+    public static Properties Properties;
 
-    static PropertiesManager()
+    public static void Initialize()
     {
         var path = $"{Environment.GetEnvironmentVariable("HOME")}/recordingConfig.json";
         if (File.Exists(path))
@@ -21,6 +21,7 @@ public static class PropertiesManager
             var fileContent = File.ReadAllText(path);
 
             Properties = JsonConvert.DeserializeObject<Properties>(fileContent);
+            Console.Out.WriteLine(JsonConvert.SerializeObject(Properties));
         }
         else
         {

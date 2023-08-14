@@ -6,7 +6,7 @@
 
 <h1>添加新的录制</h1>
 
-<p role="status">当前录制状态: @currentRecordingStateString</p>
+<p role="status" style="color: @statusColor">当前录制状态: @currentRecordingStateString</p>
 
 <h2>注意事项</h2>
 
@@ -21,17 +21,29 @@
 <br/>
 
 
-<input type="text" name="code" class="input-group-text" placeholder="输入用于查询的密码" @bind="codeInput"/><br>
+<input type="text" name="code" class="input is-rounded" placeholder="输入用于查询的密码" @bind="codeInput"/><br><br/>
 
-<button class="btn btn-primary" @onclick="StartRecord">开始录制</button>
+<button class="button is-primary is-light is-rounded" @onclick="StartRecord">开始录制</button>
+<button class="button is-danger is-light is-rounded" @onclick="StopRecording">停止录制</button>
 
-<br>
-<p style="color: red">@errorMessage</p>
+<br><br>
+<article class="message is-danger" style="visibility: @errorMsgVisibility">
+  <div class="message-header">
+    <p>Error</p>
+    <button class="delete" aria-label="delete"></button>
+  </div>
+    <div class="message-body">
+        无法预计的录播程序失败
+        @errorMessage
+    </div>
+</article>
 
 @code {
     private bool currentRecordingState;
     private string currentRecordingStateString => currentRecordingState ? "录制中" : "未录制";
     private string errorMessage;
+    private string statusColor => currentRecordingState ? "red" : "green";
+    private string errorMsgVisibility => string.IsNullOrWhiteSpace(errorMessage) ? "hidden" : "visible";
     
     private string? codeInput;
     
@@ -47,8 +59,37 @@
             errorMessage = "当前已经在录制中, 请勿重复录制";
             return;
         }
+
+        if (string.IsNullOrWhiteSpace(codeInput))
+        {
+            errorMessage = "Code不能为空";
+        }
         
         var recording = RecordManager.StartRecording(codeInput);
+        if (recording == "200")
+        {
+            currentRecordingState = true;
+        }
+        else
+        {
+            errorMessage = recording;
+        }
+    }
+
+    private void StopRecording()
+    {
+        if (!currentRecordingState)
+        {
+            errorMessage = "当前未在录制中";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(codeInput))
+        {
+            errorMessage = "Code不能为空";
+        }
+        
+        var recording = RecordManager.StopRecording(codeInput);
         if (recording == "200")
         {
             currentRecordingState = true;

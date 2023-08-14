@@ -4,6 +4,7 @@ using RecordAppBlazor.Data;
 using RecordAppBlazor.Function;
 using Timer = RecordAppBlazor.Function.Timer;
 
+PropertiesManager.Initialize();
 Obs.InitializeObs();
 
 var builder = WebApplication.CreateBuilder(args);

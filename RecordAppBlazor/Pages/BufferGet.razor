@@ -14,17 +14,26 @@
 
 <p>当前缓存状态: @currentBufferStatusString</p>
 
-<button class="btn btn-primary" @onclick="GetBuffer">调取</button>
+<button class="button is-primary is-light is-rounded" @onclick="GetBuffer">调取</button>
 
-<br>
-<p style="color: red">@errorMessage</p>
+<br><br>
+<article class="message is-danger" style="visibility: @errorMsgVisibility">
+  <div class="message-header">
+    <p>Error</p>
+    <button class="delete" aria-label="delete"></button>
+  </div>
+    <div class="message-body">
+        无法预计的录播程序失败
+        @errorMessage
+    </div>
+</article>
 
 
 @code {
     private bool currentBufferStatus => BufferManager.isBuffering;
     private string currentBufferStatusString => currentBufferStatus ? "正在运行中" : "已停止";
     private string errorMessage;
-
+    private string errorMsgVisibility => string.IsNullOrWhiteSpace(errorMessage) ? "hidden" : "visible";
     
     private void GetBuffer()
     {

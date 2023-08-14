@@ -75,6 +75,8 @@ public static class RecordManager
     {
         Console.Out.WriteLine("stop code: " + code);
 
+        code = code.ToMD5();
+
         // 停止录制
         Obs.client.StopRecord();
         

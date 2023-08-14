@@ -1,17 +1,10 @@
-﻿<div class="alert alert-secondary mt-4">
-    <span class="oi oi-pencil me-2" aria-hidden="true"></span>
-    <strong>@Title</strong>
-    
-    <br/>
-
-    <span class="text-nowrap">
+﻿<article class="message is-link">
+    <div class="message-body">
         @Content
-    </span>
-</div>
+    </div>
+</article>
 
 @code {
-    [Parameter]
-    public string? Title { get; set; }
     
     [Parameter]
     public string? Content { get; set; }
