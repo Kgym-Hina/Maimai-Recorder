@@ -12,7 +12,7 @@ public static class BufferManager
     public static bool isInitialized = false;
     public static string StartBuffer()
     {
-        if (File.Exists($"{Environment.GetEnvironmentVariable("HOME")}/record.lock"))
+        if (File.Exists(PropertiesManager.Properties.RecordLockPath))
         {
             return "当前正在录制中, 缓存已关闭";
         }
@@ -58,7 +58,7 @@ public static class BufferManager
         // 复制文件
         var files = Directory.GetFiles(path);
         Console.Out.WriteLine("files count: " + files.Length);
-        var p = $"{Environment.GetEnvironmentVariable("HOME")}/Records";
+        var p = PropertiesManager.Properties.TempRecordPath;
 
         if (files.Length == 1)
         {

@@ -9,6 +9,10 @@ public class Properties
     public TimeSpan RecordTimeSpan = TimeSpan.FromMinutes(2.5); // 录制的时长
     public TimeOnly StopTime = new(21, 45, 00); // 停止增加录制的时间
     public string FileServerRoot;
+    public string OBSWebsocketAddress = "ws://localhost:4455";
+    public string OBSWebsocketPassword = "";
+    public string TempRecordPath = $"{Environment.GetEnvironmentVariable("HOME")}/Records/";
+    public string RecordLockPath = $"{Environment.GetEnvironmentVariable("HOME")}/record.lock";
 }
 
 public static class PropertiesManager

@@ -11,17 +11,19 @@ public static class RecordManager
     static RecordManager()
     {
         // 确保目录存在
-        var p = $"{Environment.GetEnvironmentVariable("HOME")}/Records/";
+        var p = PropertiesManager.Properties.TempRecordPath;
         var e = Directory.Exists(p);
         if (!e)
         {
             Directory.CreateDirectory(p);
         }
         
+        
+        
         // 删除上次的进程锁
-        if (File.Exists($"{Environment.GetEnvironmentVariable("HOME")}/record.lock"))
+        if (File.Exists(PropertiesManager.Properties.RecordLockPath))
         {
-            File.Delete($"{Environment.GetEnvironmentVariable("HOME")}/record.lock");
+            File.Delete(PropertiesManager.Properties.RecordLockPath);
         }
         
         // 删除上次的文件
@@ -56,7 +58,7 @@ public static class RecordManager
         }
 
         // 写入进程锁
-        File.WriteAllText($"{Environment.GetEnvironmentVariable("HOME")}/record.lock",
+        File.WriteAllText(PropertiesManager.Properties.RecordLockPath,
             $"{code}::{DateTime.Now.Add(PropertiesManager.Properties.RecordTimeSpan)}");
         
         // 清空目录
@@ -87,13 +89,14 @@ public static class RecordManager
         Thread.Sleep(2000);
 
         // 重置进程锁
-        File.Delete($"{Environment.GetEnvironmentVariable("HOME")}/record.lock");
+        File.Delete(PropertiesManager.Properties.RecordLockPath);
         
         // 复制文件
         var path = Obs.client.GetRecordDirectory();
         var files = Directory.GetFiles(path);
         Console.Out.WriteLine("files count: " + files.Length);
-        var p = $"{Environment.GetEnvironmentVariable("HOME")}/Records";
+        var p =PropertiesManager.Properties.TempRecordPath;
+        
 
         if (files.Length == 1)
         {
