@@ -1,3 +1,4 @@
+using System;
 using OBSWebsocketDotNet.Communication;
 
 namespace RecordAppBlazor.Function;
