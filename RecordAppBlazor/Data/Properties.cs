@@ -22,6 +22,8 @@ public class Properties
     public string SystemSubtitle = "Arcade Game Recording System-Z";
     public bool PlayersCanStopRecording = true;
     public bool PlayersCanStartRecording = true;
+    public string RecordingSceneName = "Recording";
+    public string NormalSceneName = "Game";
 }
 
 public static class PropertiesManager

@@ -72,6 +72,7 @@ public static class RecordManager
         }
         
         // 开始录制
+        Obs.client.SetCurrentProgramScene(PropertiesManager.Properties.RecordingSceneName);
         Obs.client.StartRecord();
 
         return "200";
@@ -80,6 +81,7 @@ public static class RecordManager
     public static string StopRecording(string? code)
     {
         Console.Out.WriteLine("stop code: " + code);
+        
 
         code = code.ToMD5();
 
@@ -115,6 +117,8 @@ public static class RecordManager
         });
 
         BufferManager.StartBuffer();
+        
+        Obs.client.SetCurrentProgramScene(PropertiesManager.Properties.NormalSceneName);
 
         return "200";
     }
