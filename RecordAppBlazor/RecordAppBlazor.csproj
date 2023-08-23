@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="obs-websocket-dotnet" Version="5.0.0.3" />
+      <PackageReference Include="Qiniu.Shared" Version="7.2.15" />
     </ItemGroup>
 
 </Project>

@@ -7,7 +7,7 @@ namespace RecordAppBlazor.Data;
 
 public static class RecordingService
 {
-    private static List<Recording> AllRecordings = new();
+    public static List<Recording> AllRecordings = new();
     public static void AddRecording(Recording recording)
     {
         AllRecordings.Add(recording);
@@ -22,4 +22,6 @@ public static class RecordingService
     {
         return AllRecordings.First(r => r.Code == code.ToMD5());
     }
+    
+    
 }

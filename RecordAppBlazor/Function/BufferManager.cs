@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using RecordAppBlazor.Data;
+using RecordAppBlazor.Pages;
 
 namespace RecordAppBlazor.Function;
 
@@ -60,20 +61,32 @@ public static class BufferManager
         Console.Out.WriteLine("files count: " + files.Length);
         var p = PropertiesManager.Properties.TempRecordPath;
 
-        if (files.Length == 1)
-        {
-            File.Copy(files[0], $"{p}/{code}.mkv");
-        }
-        else
+        // 上次文件没有清空的情况
+        if (files.Length != 1)
         {
             return "内部错误, 请联系管理员";
         }
-        Console.Out.WriteLine("copy file success");
-        RecordingService.AddRecording(new Recording()
+        
+        File.Copy(files[0], $"{p}/{code}.mkv");
+
+        var recording = new Recording()
         {
             Code = code,
-            Path =  $"{p}/{code}.mkv"
-        });
+            Path = $"{p}/{code}.mkv",
+            Status = FileStatus.Uploading
+        };
+        
+        // 添加到列表
+        RecordingService.AddRecording(recording);
+
+        // 上传
+        Upload.UploadFile($"{p}/{code}.mkv", code);
+        
+        // 重置进程锁
+        File.Delete(PropertiesManager.Properties.RecordLockPath);
+        
+        // 更新前台状态
+        RecordingService.AllRecordings.First(a => a.Code == code).Status = FileStatus.Ready;
         
         return $"请使用 {rawCode} 来下载调取的录像";
     }

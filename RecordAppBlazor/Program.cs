@@ -5,9 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RecordAppBlazor.Data;
 using RecordAppBlazor.Function;
+using RecordAppBlazor.Pages;
 using Timer = RecordAppBlazor.Function.Timer;
 
 PropertiesManager.Initialize();
+Upload.Initialize();
 Obs.InitializeObs();
 
 var builder = WebApplication.CreateBuilder(args);

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using RecordAppBlazor.Data;
+using RecordAppBlazor.Pages;
 
 namespace RecordAppBlazor.Function;
 
@@ -88,36 +89,46 @@ public static class RecordManager
         // 停止录制
         Obs.client.StopRecord();
         
+        // 等待OBS处理
         Thread.Sleep(2000);
-
-        // 重置进程锁
-        File.Delete(PropertiesManager.Properties.RecordLockPath);
         
-        // 复制文件
+        // 获取文件
         var path = Obs.client.GetRecordDirectory();
         var files = Directory.GetFiles(path);
         Console.Out.WriteLine("files count: " + files.Length);
         var p =PropertiesManager.Properties.TempRecordPath;
         
-
-        if (files.Length == 1)
-        {
-            File.Copy(files[0], $"{p}/{code}.mkv");
-        }
-        else
+        // 上次文件没有清空的情况
+        if (files.Length != 1)
         {
             return "内部错误, 请联系管理员";
         }
+        
+        File.Copy(files[0], $"{p}/{code}.mkv");
 
-        Console.Out.WriteLine("copy file success");
-        RecordingService.AddRecording(new Recording()
+        var recording = new Recording()
         {
             Code = code,
-            Path =  $"{p}/{code}.mkv"
-        });
+            Path = $"{p}/{code}.mkv",
+            Status = FileStatus.Uploading
+        };
+        
+        // 添加到列表
+        RecordingService.AddRecording(recording);
 
+        // 上传
+        Upload.UploadFile($"{p}/{code}.mkv", code);
+        
+        // 重置进程锁
+        File.Delete(PropertiesManager.Properties.RecordLockPath);
+        
+        // 更新前台状态
+        RecordingService.AllRecordings.First(a => a.Code == code).Status = FileStatus.Ready;
+
+        // 恢复缓存
         BufferManager.StartBuffer();
         
+        // 恢复场景
         Obs.client.SetCurrentProgramScene(PropertiesManager.Properties.NormalSceneName);
 
         return "200";

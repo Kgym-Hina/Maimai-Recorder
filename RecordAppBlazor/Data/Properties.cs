@@ -24,6 +24,10 @@ public class Properties
     public bool PlayersCanStartRecording = true;
     public string RecordingSceneName = "Recording";
     public string NormalSceneName = "Game";
+    public string QiniuAccessKey;
+    public string QiniuSecretKey;
+    public string QiniuBucket;
+    public bool UseHttps = false;
 }
 
 public static class PropertiesManager
