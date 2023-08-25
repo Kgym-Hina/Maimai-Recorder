@@ -37,8 +37,6 @@ public static class RecordManager
     
     public static string StartRecording(string? code)
     {
-        BufferManager.StopBuffer();
-        
         code = code.ToMD5();
         Console.Out.WriteLine("start code: " + code);
         if (string.IsNullOrWhiteSpace(code))
@@ -50,6 +48,8 @@ public static class RecordManager
         {
             return "此code已经被使用";
         }
+        
+        BufferManager.StopBuffer();
         
         // 在指定时间后停止录制
         var timeNow = DateTime.Now;
