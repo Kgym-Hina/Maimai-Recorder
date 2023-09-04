@@ -50,6 +50,19 @@
 
     private void StartRecord()
     {
+        StartRecordingBackground();
+    }
+
+    private void StopRecording()
+    {
+        StopRecordingBackground();
+    }
+}
+
+@functions
+{
+    private void StartRecordingBackground()
+    {
         if (currentRecordingState == true)
         {
             errorMessage = "当前已经在录制中, 请勿重复录制";
@@ -71,8 +84,8 @@
             errorMessage = recording;
         }
     }
-
-    private void StopRecording()
+    
+    private void StopRecordingBackground()
     {
         if (!currentRecordingState)
         {

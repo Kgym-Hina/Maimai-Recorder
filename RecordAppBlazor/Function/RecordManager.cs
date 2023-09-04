@@ -87,10 +87,17 @@ public static class RecordManager
         code = code.ToMD5();
 
         // 停止录制
-        Obs.client.StopRecord();
+        if (Obs.client.GetRecordStatus().IsRecording)
+        {
+            Obs.client.StopRecord();
+        }
+        else
+        {
+            return "已经停止";
+        }
         
         // 等待OBS处理
-        Thread.Sleep(2000);
+        Thread.Sleep(5000);
         
         // 获取文件
         var path = Obs.client.GetRecordDirectory();

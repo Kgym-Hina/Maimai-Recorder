@@ -32,7 +32,7 @@
         try
         {
             var recording = RecordingService.GetRecording(code);
-            navi.NavigateTo($"{PropertiesManager.Properties.FileServerRoot}{recording.Code}.mkv");
+            navi.NavigateTo($"{PropertiesManager.Properties.FileServerRoot}{recording.Code}.mkv", true);
         }
         catch (Exception e)
         {

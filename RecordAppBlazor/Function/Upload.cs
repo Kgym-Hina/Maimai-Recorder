@@ -34,7 +34,7 @@ public static class Upload
         // https://developer.qiniu.com/kodo/manual/put-policy
         var putPolicy = new PutPolicy()
         {
-            Scope = $"{bucket}",
+            Scope = $"{bucket}:{saveCode}",
             DeleteAfterDays = 1,
         };
         // 上传策略有效期(对应于生成的凭证的有效期)          
